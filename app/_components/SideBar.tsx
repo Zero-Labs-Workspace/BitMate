@@ -15,7 +15,7 @@ import { ConnectButton, darkTheme } from "thirdweb/react";
 import { embeddedWallet, injectedProvider } from "thirdweb/wallets";
 import { client } from "@/providers/thirdwebProvider";
 import { FACTORY_ADDRESS_CONTRACT } from "@/constants/contracts";
-import { botanixChain } from "@/constants/chains";
+import { bobSeploiaChain, rootstackTestnetChain } from "@/constants/chains";
 
 export default function SideBar() {
   const pathname = usePathname();
@@ -88,7 +88,8 @@ export default function SideBar() {
             })}
             autoConnect={true}
             client={client}
-            chain={botanixChain}
+            chains={[rootstackTestnetChain, bobSeploiaChain]}
+            // chain={rootstackTestnetChain}
             wallets={[embeddedWallet()]}
           />
         </div>

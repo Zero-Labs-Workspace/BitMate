@@ -12,7 +12,7 @@ import { isValidWalletAddress, findToken } from "../../lib/utils";
 import { getContract, sendTransaction } from "thirdweb";
 import { transfer } from "thirdweb/extensions/erc20";
 import { client } from "@/providers/thirdwebProvider";
-import { botanixChain } from "@/constants/chains";
+import { rootstackTestnetChain } from "@/constants/chains";
 import { Account, getWalletBalance } from "thirdweb/wallets";
 import { isAddress } from "thirdweb/utils";
 import { useActiveWallet } from "thirdweb/react";
@@ -152,7 +152,7 @@ export default function Page() {
 
         const contract = getContract({
           address: tokenAddress,
-          chain: botanixChain,
+          chain: rootstackTestnetChain,
           client,
         });
 
@@ -203,7 +203,7 @@ export default function Page() {
           address: acc,
           tokenAddress: tokenAdd ?? undefined,
           client,
-          chain: botanixChain,
+          chain: rootstackTestnetChain,
         });
 
         setMessages([

@@ -1,6 +1,5 @@
 "use client";
 
-import { botanixChain } from "@/constants/chains";
 import { NFT_CONTRACT } from "@/constants/contracts";
 import { createThirdwebClient, defineChain, getContract } from "thirdweb";
 import { ThirdwebProvider } from "thirdweb/react";
