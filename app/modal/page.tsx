@@ -4,12 +4,17 @@ import { Form, FormField, FormItem } from "../_components/ui/form";
 import { Input } from "../_components/ui/input";
 import { Button } from "../_components/ui/button";
 import { useActiveAccount } from "thirdweb/react";
-import { Bot, User } from "lucide-react";
+import { Bot, ExternalLink, User } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { isValidWalletAddress, findToken } from "../../lib/utils";
-import { getContract, sendTransaction } from "thirdweb";
+import {
+  getContract,
+  prepareTransaction,
+  sendTransaction,
+  toWei,
+} from "thirdweb";
 import { transfer } from "thirdweb/extensions/erc20";
 import { client } from "@/providers/thirdwebProvider";
 import { rootstackTestnetChain } from "@/constants/chains";
@@ -20,22 +25,22 @@ import { useActiveWallet } from "thirdweb/react";
 const formSchema = z.object({
   inputTxt: z.string().min(2).max(100),
 });
+const BLOCK_EXPLORER_URL = "https://rootstock-testnet.blockscout.com/tx/";
 
 export default function Page() {
   const account = useActiveAccount();
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    [
-      {
-        role: "bot",
-        content: "Hello! How can I help you today?",
-      },
-      {
-        role: "bot",
-        content:
-          "You can search for your balance,do transactions and much more.",
-      },
-    ]
-  );
+  const [messages, setMessages] = useState<
+    { role: string; content: string | React.ReactNode }[]
+  >([
+    {
+      role: "bot",
+      content: "Hello! How can I help you today?",
+    },
+    {
+      role: "bot",
+      content: "You can search for your balance,do transactions and much more.",
+    },
+  ]);
   const wallet = useActiveWallet();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,7 +61,7 @@ export default function Page() {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const newMessages: { role: string; content: string }[] = [
+    const newMessages: { role: string; content: string | React.ReactNode }[] = [
       ...messages,
       {
         role: "user",
@@ -120,6 +125,7 @@ export default function Page() {
           },
         ]);
         break;
+
       case "transfer":
         if (!isValidWalletAddress(data[0].address)) {
           setMessages([
@@ -131,7 +137,10 @@ export default function Page() {
           ]);
           return;
         }
-        const tokenAddress = findToken(data[0].token1);
+        const tokenAddress =
+          data[0].token1.toLowerCase() === "trbtc"
+            ? "trbtc"
+            : await findToken(data[0].token1);
         if (!tokenAddress) {
           setMessages([
             ...newMessages,
@@ -156,11 +165,23 @@ export default function Page() {
           client,
         });
 
-        const transaction = transfer({
-          contract,
-          to: data[0].address,
-          amount: data[0].amount,
-        });
+        let transaction;
+
+        if (tokenAddress === "trbtc") {
+          console.log("sending trbtc");
+          transaction = prepareTransaction({
+            to: data[0].address,
+            chain: rootstackTestnetChain,
+            client: client,
+            value: toWei(data[0].amount),
+          });
+        } else {
+          transaction = transfer({
+            contract,
+            to: data[0].address,
+            amount: data[0].amount,
+          });
+        }
 
         const transactionResult = await sendTransaction({
           transaction,
@@ -169,15 +190,40 @@ export default function Page() {
 
         setMessages([
           ...newMessages,
+          // {
+          //   role: "bot",
+          //   content: `Transaction sent: ${transactionResult.transactionHash}`,
+          // },
           {
             role: "bot",
-            content: `Transaction sent: ${transactionResult.transactionHash}`,
+            content: (
+              <div className="flex items-center gap-2">
+                <span>Transaction sent: </span>
+                <a
+                  href={`${BLOCK_EXPLORER_URL}${transactionResult.transactionHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-600 flex items-center gap-1"
+                >
+                  {`${transactionResult.transactionHash.slice(
+                    0,
+                    6
+                  )}...${transactionResult.transactionHash.slice(-4)}`}
+                  <ExternalLink size={16} />
+                </a>
+              </div>
+            ),
           },
         ]);
         break;
+
       case "balance":
-        const tokenAdd = findToken(data[0].token1);
-        if (!tokenAdd && data[0].token1.toLowerCase() !== "btc") {
+        const tokenAdd =
+          data[0].token1.toLowerCase() === "trbtc"
+            ? "trbtc"
+            : await findToken(data[0].token1);
+
+        if (!tokenAdd && data[0].token1.toLowerCase() !== "trbtc") {
           setMessages([
             ...newMessages,
             {
@@ -198,13 +244,21 @@ export default function Page() {
         const acc = isAddress(data[0].address)
           ? data[0].address
           : account?.address;
-
-        const balance = await getWalletBalance({
-          address: acc,
-          tokenAddress: tokenAdd ?? undefined,
-          client,
-          chain: rootstackTestnetChain,
-        });
+        let balance;
+        if (tokenAdd === "trbtc") {
+          balance = await getWalletBalance({
+            address: acc,
+            client,
+            chain: rootstackTestnetChain,
+          });
+        } else {
+          balance = await getWalletBalance({
+            address: acc,
+            tokenAddress: tokenAdd ?? undefined,
+            client,
+            chain: rootstackTestnetChain,
+          });
+        }
 
         setMessages([
           ...newMessages,
