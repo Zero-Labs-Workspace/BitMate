@@ -23,7 +23,7 @@ export default function SideBar() {
 	return (
 		<div className="w-full max-w-96 h-full">
 			<div className="space-y-5 w-10/12 mx-auto h-full flex flex-col items-stretch">
-				<h5 className="text-4xl p-4 font-semibold text-[#FF8000]">
+				<h5 className="text-4xl p-4 font-semibold text-[#FF9100]">
 					Block Pilot
 				</h5>
 				{[

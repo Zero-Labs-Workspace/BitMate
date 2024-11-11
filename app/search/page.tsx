@@ -135,7 +135,7 @@ export default function Page() {
 										</div>
 									) : (
 										<div className="flex mx-4 w-11/12 max-w-5xl items-center">
-											<div className="p-3 bg-[#FF8000] rounded-full">
+											<div className="p-3 bg-[#FF9100] rounded-full">
 												<Bot />
 											</div>
 											<p className="mx-4 ">{content}</p>
@@ -164,7 +164,7 @@ export default function Page() {
 								/>
 								<Button
 									type="submit"
-									className="bg-[#FF8000] hover:bg-[#FF8000] rounded-xl"
+									className="bg-[#FF9100] hover:bg-[#FF9100] rounded-xl"
 								>
 									Search
 								</Button>
