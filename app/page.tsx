@@ -1,63 +1,141 @@
 "use client";
 
-// import { useConnect, useSwitchChain } from "wagmi";
+import { TrendingUp, ArrowRight, Plus } from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
 import { Button } from "./_components/ui/button";
 import {
-	Cog,
-	CreditCard,
-	Search,
-	ArrowRight,
-	Box,
-	Orbit,
-	BotMessageSquare,
-} from "lucide-react";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./_components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "./_components/ui/chart";  
+import { useEffect, useState } from "react";
+import { useActiveAccount } from "thirdweb/react";
+import DashboardTokens from "./_components/top-coins";
+import TokenHoldings from "./_components/TokenHoldins";
 
-export default function Home() {
-	return (
-		<main className="flex flex-col items-center justify-center h-full">
-			<div className="space-y-6">
-				<div className="space-y-2">
-					<h1 className="text-center font-black text-5xl">
-						Unlock the power of web3.
-					</h1>
-					<h2 className="text-center opacity-80 text-2xl max-w-3xl">
-						Search information, execute transactions, and deploy
-						smart contracts by chatting with Block Pilot AI.
-					</h2>
-				</div>
-				<div className="space-y-4">
-					{[
-						{
-							name: "Ask Block Pilot AI",
-							desc: "Explore the web3 ecosystem and find the resources that you need.",
-							href: "/",
-							color: "text-blue-400 bg-blue-700",
-							icon: <Search />,
-						},
-						{
-							name: "Send Transaction",
-							desc: "Send transactions, check your balance, and much more.",
-							href: "/modal",
-							color: "text-green-500 bg-green-700",
+export default function Component() {
+  const [portfolioData, setPortfolioData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const account = useActiveAccount();
 
-							icon: <BotMessageSquare />,
-						},
-					].map((e) => (
-						<div className="flex items-center justify-between gap-x-4 gap-y-4 border-[1px] border-[#2b2b2b] p-4 rounded-lg">
-							<div className={`${e.color} p-3 rounded-lg`}>
-								{e.icon}
-							</div>
-							<div className="flex flex-col">
-								<h6 className="text-xl">{e.name}</h6>
-								<p className="text-gray-400">{e.desc}</p>
-							</div>
-							<div className="flex-1">
-								<ArrowRight className="text-gray-600 float-end" />
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
-		</main>
-	);
+  const chartConfig = {
+    netWorth: {
+      label: "Net Worth",
+      color: "hsl(var(--chart-1))",
+    },
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(`https://rootstock-testnet.blockscout.com/api/v2/addresses/${account}/coin-balance-history-by-day`);
+        const { items } = await response.json();
+
+        // If items is empty or null, use default data
+        const formattedData = items && items.length > 0
+          ? items.map((item:any) => ({
+              month: new Date(item.date).toLocaleString("default", { month: "short" }), 
+              netWorth: Number(item.value) / 1e18, 
+            }))
+          : [
+              { month: "Jan", netWorth: 0 },
+              { month: "Feb", netWorth: 0 },
+              { month: "Mar", netWorth: 0 },
+              { month: "Apr", netWorth: 0 },
+              { month: "May", netWorth: 0 },
+              { month: "Jun", netWorth: 0 },
+            ];
+
+        setPortfolioData(formattedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  return (
+    <div className="p-6 space-y-6 min-h-screen text-white">
+     
+     <div className="grid grid-cols-3 gap-4">
+       <Card className="bg-transparent border-zinc-800 col-span-2">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-white">
+            Total Net Worth
+          </CardTitle>
+          <CardDescription className="text-slate-100">
+            Showing net worth for the last few months
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="my-4">
+          <ChartContainer config={chartConfig} className="h-[300px] w-full text-white">
+            {loading ? (
+              <p>Loading data...</p>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={portfolioData}
+                  margin={{
+                    left: 12,
+                    right: 12,
+                  }}
+                >
+                  <CartesianGrid vertical={false} stroke="#333" />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => value.slice(0, 3)}
+                    stroke="#fff"
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => `${value / 1000}`}
+                    stroke="#fff"
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent indicator="dot" hideLabel className="text-white" />
+                    }
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="netWorth"
+                    fill="#FF9100"
+                    fillOpacity={0.4}
+                    stroke="#FF9100"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </ChartContainer>
+        </CardContent>
+      </Card>
+      <TokenHoldings />
+      </div>
+
+      {/* Holding Tokens Table */}
+      <DashboardTokens />
+    </div>
+  );
 }
