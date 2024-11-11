@@ -4,8 +4,8 @@ import {
   Box,
   Cog,
   CreditCard,
+  Gamepad2,
   Home,
-  Image,
   Search,
 } from "lucide-react";
 import Link from "next/link";
@@ -16,63 +16,64 @@ import { embeddedWallet, injectedProvider } from "thirdweb/wallets";
 import { client } from "@/providers/thirdwebProvider";
 import { FACTORY_ADDRESS_CONTRACT } from "@/constants/contracts";
 import { rootstackTestnetChain } from "@/constants/chains";
+import Image from "next/image";
 
 export default function SideBar() {
   const pathname = usePathname();
   return (
     <div className="w-full max-w-96 h-full">
       <div className="space-y-5 w-10/12 mx-auto h-full flex flex-col items-stretch">
-        <h5 className="text-4xl p-4 font-semibold text-[#FFB72D]">Botanium</h5>
+        <div className="max-w-[11.5rem] pl-4 py-3">
+          <Image
+            src="logo.svg"
+            alt="alt"
+            width={500}
+            height={500}
+            className="w-full"
+          />
+        </div>
         {[
           {
-            name: "Home",
+            name: "Dashboard",
             href: "/",
             color: "text-white/70",
             icon: <Home />,
           },
-          {
-            name: "Ask AI",
-            href: "/search",
-            color: "text-blue-500",
-            icon: <Search />,
-          },
+          // {
+          // 	name: "Ask AI",
+          // 	href: "/search",
+          // 	icon: <Search />,
+          // },
           {
             name: "Send Transaction",
             href: "/modal",
-            color: "text-green-500",
 
             icon: <BotMessageSquare />,
           },
-          // {
-          //   name: "Deploy Contract",
-          //   href: "/deploy",
-          //   color: "text-purple-500",
-
-          //   icon: <Box />,
-          // },
           {
-            name: "Botanium AI NFTs",
-            href: "/nfts",
-            color: "text-purple-500",
-
-            icon: <Box />,
-          },
-          {
-            name: "Settings",
-            href: "/settings",
-            color: "text-[#FFB72D]",
-
-            icon: <Cog />,
+            name: "Play Games",
+            href: "/games",
+            icon: <Gamepad2 />,
           },
         ].map((e) => (
           <Link
             href={e.href}
             key={e.name}
-            className={`flex items-center gap-x-2.5 hover:bg-[#27272A]/60 rounded-lg px-3 py-2.5 ${
-              pathname === e.href ? "bg-[#27272A]" : ""
+            className={`flex items-center gap-x-2.5 hover:bg-gradient-to-r from-[#FF9100] via-[#FF9100] to-[#e900ab] rounded-lg px-3 py-2.5 group ${
+              pathname === e.href
+                ? "bg-gradient-to-r from-[#FF9100] via-[#FF9100] to-[#e900ab]"
+                : ""
             }`}
           >
-            <div className={`${e.color}`}>{e.icon}</div>
+            <div
+              className={`${
+                pathname === e.href
+                  ? "text-white"
+                  : "text-[#FF9100] group-hover:text-white "
+              }`}
+            >
+              {e.icon}
+            </div>
             <div>{e.name}</div>
           </Link>
         ))}

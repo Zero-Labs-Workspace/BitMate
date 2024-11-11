@@ -10,17 +10,14 @@ export async function POST(request: Request) {
   //   .parse(request.json());
 
   try {
-    const res = await fetch(
-      "https://api.botanium/api/v0/agent/knowledge",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-botanium-api-key": process.env.BOTANIUM_API_KEY ?? "",
-        },
-        body: JSON.stringify({ prompt }),
-      }
-    );
+    const res = await fetch("https://api.BlockPilot/api/v0/agent/knowledge", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-Block Pilot-api-key": process.env.BlockPilot_API_KEY ?? "",
+      },
+      body: JSON.stringify({ prompt }),
+    });
 
     const data = await res.json();
     return Response.json(data);
