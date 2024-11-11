@@ -105,9 +105,9 @@ export default function Page() {
 			) : (
 				<div className="h-full max-h-full w-full relative overflow-y-clip">
 					<div className="space-y-1.5 px-6 border-b border-[#444444] py-3">
-						<h5 className="text-3xl mx-auto">Ask Block Pilot AI</h5>
+						<h5 className="text-3xl mx-auto">Ask Block Pilot</h5>
 						<p className="text-lg opacity-80  mx-auto">
-							Explore the Bonatix Ecosystem and find the resources
+							Explore the Bitcoin Ecosystem and find the resources
 							that you need
 						</p>
 					</div>
@@ -135,7 +135,7 @@ export default function Page() {
 										</div>
 									) : (
 										<div className="flex mx-4 w-11/12 max-w-5xl items-center">
-											<div className="p-3 bg-[#FF9100] rounded-full">
+											<div className="p-3 bg-blue-500 rounded-full">
 												<Bot />
 											</div>
 											<p className="mx-4 ">{content}</p>
@@ -147,7 +147,7 @@ export default function Page() {
 						<Form {...form}>
 							<form
 								onSubmit={form.handleSubmit(onSubmit)}
-								className="flex gap-4 sticky bottom-0 w-full z-50"
+								className="flex gap-4 mto sticky bottom-0 w-full z-50"
 							>
 								<FormField
 									control={form.control}
@@ -164,7 +164,7 @@ export default function Page() {
 								/>
 								<Button
 									type="submit"
-									className="bg-[#FF9100] hover:bg-[#FF9100] rounded-xl"
+									className="bg-blue-500 hover:bg-blue-600 rounded-xl"
 								>
 									Search
 								</Button>
