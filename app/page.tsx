@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, ArrowRight, Plus } from "lucide-react";
+import { TrendingUp, ArrowRight, Plus, Loader2 } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 import DashboardTokens from "./_components/top-coins";
 import TokenHoldings from "./_components/TokenHoldins";
+import TopNfts from "./_components/TopNfts";
 
 export default function Component() {
   const [portfolioData, setPortfolioData] = useState([]);
@@ -41,8 +42,10 @@ export default function Component() {
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true)
       try {
         const response = await fetch(`https://rootstock-testnet.blockscout.com/api/v2/addresses/${account}/coin-balance-history-by-day`);
+        setLoading(false)
         const { items } = await response.json();
 
         // If items is empty or null, use default data
@@ -62,6 +65,7 @@ export default function Component() {
 
         setPortfolioData(formattedData);
       } catch (error) {
+        setLoading(false)
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
@@ -87,7 +91,7 @@ export default function Component() {
         <CardContent className="my-4">
           <ChartContainer config={chartConfig} className="h-[300px] w-full text-white">
             {loading ? (
-              <p>Loading data...</p>
+              <p><Loader2 className="animate-spin mx-auto"/></p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
@@ -134,8 +138,8 @@ export default function Component() {
       <TokenHoldings />
       </div>
 
-      {/* Holding Tokens Table */}
       <DashboardTokens />
+      <TopNfts />
     </div>
   );
 }
