@@ -8,8 +8,8 @@ import Wrapper from "./_components/Wrapper";
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Botanix AI",
-  description: "Botanix AI - Built for spiderhacks hackathon",
+  title: "BitMate",
+  description: "BitMate",
 };
 
 export default function RootLayout({

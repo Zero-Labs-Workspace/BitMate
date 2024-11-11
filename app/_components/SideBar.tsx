@@ -6,7 +6,6 @@ import {
 	CreditCard,
 	Gamepad2,
 	Home,
-	Image,
 	Search,
 } from "lucide-react";
 import Link from "next/link";
@@ -17,15 +16,16 @@ import { embeddedWallet, injectedProvider } from "thirdweb/wallets";
 import { client } from "@/providers/thirdwebProvider";
 import { FACTORY_ADDRESS_CONTRACT } from "@/constants/contracts";
 import { botanixChain } from "@/constants/chains";
+import Image from "next/image";
 
 export default function SideBar() {
 	const pathname = usePathname();
 	return (
 		<div className="w-full max-w-96 h-full">
 			<div className="space-y-5 w-10/12 mx-auto h-full flex flex-col items-stretch">
-				<h5 className="text-4xl p-4 font-semibold text-[#FF9100]">
-					Block Pilot
-				</h5>
+				<div className="max-w-[11.5rem] pl-4 py-3">
+        <Image src="logo.svg" alt="alt" width={500} height={500} className="w-full" />
+        </div>
 				{[
 					{
 						name: "Home",
