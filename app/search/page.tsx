@@ -135,7 +135,7 @@ export default function Page() {
 										</div>
 									) : (
 										<div className="flex mx-4 w-11/12 max-w-5xl items-center">
-											<div className="p-3 bg-blue-500 rounded-full">
+											<div className="p-3 bg-[#FF8000] rounded-full">
 												<Bot />
 											</div>
 											<p className="mx-4 ">{content}</p>
@@ -147,7 +147,7 @@ export default function Page() {
 						<Form {...form}>
 							<form
 								onSubmit={form.handleSubmit(onSubmit)}
-								className="flex gap-4 mto sticky bottom-0 w-full z-50"
+								className="flex gap-4 sticky bottom-0 w-full z-50"
 							>
 								<FormField
 									control={form.control}
@@ -164,7 +164,7 @@ export default function Page() {
 								/>
 								<Button
 									type="submit"
-									className="bg-blue-500 hover:bg-blue-600 rounded-xl"
+									className="bg-[#FF8000] hover:bg-[#FF8000] rounded-xl"
 								>
 									Search
 								</Button>
