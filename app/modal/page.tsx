@@ -277,7 +277,7 @@ export default function Page() {
                     </div>
                   ) : (
                     <div className="flex mx-4 w-11/12 max-w-7xl items-center">
-                      <div className="p-3 bg-green-500 rounded-full">
+                      <div className="p-3 bg-gradient-to-bl from-[#FF9100] via-[#FF9100] to-[#db00e9] rounded-full">
                         <Bot />
                       </div>
                       <p className="mx-4">{content}</p>
@@ -306,7 +306,7 @@ export default function Page() {
                 />
                 <Button
                   type="submit"
-                  className="bg-green-500 hover:bg-green-600 rounded-xl"
+                  className="bg-gradient-to-br from-[#FF9100] via-[#FF9100] to-[#c200e9] rounded-xl"
                 >
                   Search
                 </Button>

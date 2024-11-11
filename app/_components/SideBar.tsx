@@ -24,44 +24,56 @@ export default function SideBar() {
 		<div className="w-full max-w-96 h-full">
 			<div className="space-y-5 w-10/12 mx-auto h-full flex flex-col items-stretch">
 				<div className="max-w-[11.5rem] pl-4 py-3">
-        <Image src="logo.svg" alt="alt" width={500} height={500} className="w-full" />
-        </div>
+					<Image
+						src="logo.svg"
+						alt="alt"
+						width={500}
+						height={500}
+						className="w-full"
+					/>
+				</div>
 				{[
 					{
-						name: "Home",
+						name: "Dashboard",
 						href: "/",
 						color: "text-white/70",
 						icon: <Home />,
 					},
-					{
-						name: "Ask AI",
-						href: "/search",
-						color: "text-blue-500",
-						icon: <Search />,
-					},
+					// {
+					// 	name: "Ask AI",
+					// 	href: "/search",
+					// 	icon: <Search />,
+					// },
 					{
 						name: "Send Transaction",
 						href: "/modal",
-						color: "text-green-500",
 
 						icon: <BotMessageSquare />,
 					},
 					{
 						name: "Play Games",
 						href: "/games",
-						color: "text-purple-500",
-
 						icon: <Gamepad2 />,
 					},
 				].map((e) => (
 					<Link
 						href={e.href}
 						key={e.name}
-						className={`flex items-center gap-x-2.5 hover:bg-[#27272A]/60 rounded-lg px-3 py-2.5 ${
-							pathname === e.href ? "bg-[#27272A]" : ""
+						className={`flex items-center gap-x-2.5 hover:bg-gradient-to-r from-[#FF9100] via-[#FF9100] to-[#e900ab] rounded-lg px-3 py-2.5 group ${
+							pathname === e.href
+								? "bg-gradient-to-r from-[#FF9100] via-[#FF9100] to-[#e900ab]"
+								: ""
 						}`}
 					>
-						<div className={`${e.color}`}>{e.icon}</div>
+						<div
+							className={`${
+								pathname === e.href
+									? "text-white"
+									: "text-[#FF9100] group-hover:text-white "
+							}`}
+						>
+							{e.icon}
+						</div>
 						<div>{e.name}</div>
 					</Link>
 				))}
