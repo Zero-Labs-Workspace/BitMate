@@ -11,12 +11,12 @@ export async function POST(request: Request) {
 
   try {
     const res = await fetch(
-      "https://api.botanium/api/v0/agent/parameters-extraction",
+      "https://api.Block Pilot/api/v0/agent/parameters-extraction",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-         "x-botanium-api-key": process.env.BOTANIUM_API_KEY ?? "",
+         "x-Block Pilot-api-key": process.env.Block Pilot_API_KEY ?? "",
         },
         body: JSON.stringify({ prompt }),
       }
