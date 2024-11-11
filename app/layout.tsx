@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
-import { Provider } from "@/providers/thirdwebProvider";
-import SideBar from "./_components/SideBar";
 import Wrapper from "./_components/Wrapper";
 
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "BitMate",
-  description: "BitMate",
+  description: "Bitmate",
 };
 
 export default function RootLayout({
