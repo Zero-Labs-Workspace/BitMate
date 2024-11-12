@@ -37,12 +37,12 @@ import { useActiveAccount } from "thirdweb/react";
 import DashboardTokens from "./_components/top-coins";
 import TopNfts from "./_components/TopNfts";
 import TokenHoldings from "./_components/TokenHoldins";
-import { ProjectCard } from "./markets/page";
 import { projects } from "@/constants/market";
 import { isAddress } from "thirdweb";
 import { getWalletBalance } from "thirdweb/wallets";
 import { rootstackTestnetChain } from "@/constants/chains";
 import { client } from "@/providers/thirdwebProvider";
+import { ProjectCard } from "./_components/ProjectCard";
 
 interface DashboardHeaderProps {
   totalValue: number;
