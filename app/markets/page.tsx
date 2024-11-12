@@ -21,7 +21,7 @@ const formatTVL = (value: number) => {
   return `$${value.toFixed(2)}`;
 };
 
-const ProjectCard = ({ project }: { project: any }) => (
+export const ProjectCard = ({ project }: { project: any }) => (
   <Card className="bg-[#27272A] border-zinc-800 hover:border-zinc-700 transition-colors">
     <CardContent className="p-6">
       <div className="flex items-start justify-between gap-4">
