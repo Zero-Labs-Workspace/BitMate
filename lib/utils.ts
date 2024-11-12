@@ -37,3 +37,18 @@ export function isValidWalletAddress(address: string): boolean {
 
   return regex.test(address);
 }
+
+export async function fetchWalletData(address: string) {
+  const [transactionsRes, portfolioRes] = await Promise.all([
+    fetch(`/api/wallet/${address}/transactions`),
+    fetch(`/api/wallet/${address}/portfolio`),
+  ]);
+
+  const transactions = await transactionsRes.json();
+  const portfolio = await portfolioRes.json();
+
+  return {
+    transactions,
+    portfolio,
+  };
+}

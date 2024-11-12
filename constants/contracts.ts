@@ -6,4 +6,6 @@ const NFT_CONTRACT = "0x8a980eF1e4CE1DD6e5eAB0ED77483b18fFb417AB";
 
 const CHAIN = defineChain(3636);
 
-export { NFT_CONTRACT, FACTORY_ADDRESS_CONTRACT, CHAIN };
+const BLOCKSCOUT_API = "https://rootstock-testnet.blockscout.com/api/v2";
+
+export { NFT_CONTRACT, FACTORY_ADDRESS_CONTRACT, CHAIN, BLOCKSCOUT_API };
