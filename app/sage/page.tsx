@@ -4,7 +4,7 @@ import { Form, FormField, FormItem } from "../_components/ui/form";
 import { Input } from "../_components/ui/input";
 import { Button } from "../_components/ui/button";
 import { useActiveAccount } from "thirdweb/react";
-import { Bot, ExternalLink, User } from "lucide-react";
+import { Bot, ExternalLink, Send, User } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -410,7 +410,7 @@ export default function Page() {
 									type="submit"
 									className="bg-gradient-to-br from-[#FF9100] via-[#FF9100] to-[#c200e9] rounded-xl"
 								>
-									Search
+									<Send  />
 								</Button>
 							</form>
 						</Form>
