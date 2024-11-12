@@ -55,7 +55,7 @@ interface PortfolioData {
   netWorth: number;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   totalValue,
   dailyChange,
   balance,
@@ -121,7 +121,7 @@ export default function Component() {
   const [walletBalance, setWalletBalance] = useState<string>("0.0000 tRBTC");
   const account = useActiveAccount();
 
-  const acc = isAddress(account) ? account : account;
+  const acc = account ? (isAddress(account.address) ? account.address : account.address) : undefined;
 
   const chartConfig = {
     netWorth: {
@@ -159,7 +159,7 @@ export default function Component() {
       
       try {
         const balance = await getWalletBalance({
-          address: acc as any,
+          address: acc,
           client,
           chain: rootstackTestnetChain,
         });
@@ -168,7 +168,7 @@ export default function Component() {
         setWalletBalance(formattedBalance);
       } catch (error) {
         console.error("Error fetching wallet balance:", error);
-        setWalletBalance("0.00 tRBTC");
+        setWalletBalance("0.0000 tRBTC");
       }
     }
 
