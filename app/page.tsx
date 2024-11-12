@@ -45,7 +45,6 @@ export default function Component() {
       setLoading(true)
       try {
         const response = await fetch(`https://rootstock-testnet.blockscout.com/api/v2/addresses/${account}/coin-balance-history-by-day`);
-        setLoading(false)
         const { items } = await response.json();
 
         // If items is empty or null, use default data
@@ -65,7 +64,6 @@ export default function Component() {
 
         setPortfolioData(formattedData);
       } catch (error) {
-        setLoading(false)
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
@@ -91,7 +89,9 @@ export default function Component() {
         <CardContent className="my-4">
           <ChartContainer config={chartConfig} className="h-[300px] w-full text-white">
             {loading ? (
-              <p><Loader2 className="animate-spin mx-auto"/></p>
+              <div className="flex items-center justify-center h-full">
+                <Loader2 className="animate-spin text-[#FF9100]" size={48} />
+              </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
