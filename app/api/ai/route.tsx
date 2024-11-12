@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { PROMPT_TEMPLATES } from "@/constants/prompt";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY as string,
@@ -7,7 +8,7 @@ const anthropic = new Anthropic({
 
 export async function POST(req: Request) {
   try {
-    const { type, data, question } = await req.json();
+    const { type, data, question, address } = await req.json();
 
     let prompt;
     switch (type) {
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
         prompt = PROMPT_TEMPLATES.portfolioAdvice(data.portfolio, data.market);
         break;
       case "chat":
-        prompt = PROMPT_TEMPLATES.chatAssistant(data, question);
+        prompt = PROMPT_TEMPLATES.chatAssistant(data, question, address);
         break;
       default:
         return NextResponse.json(
@@ -27,6 +28,8 @@ export async function POST(req: Request) {
         );
     }
 
+    console.log("Prompt:", prompt);
+
     const response = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 2024,
@@ -34,8 +37,10 @@ export async function POST(req: Request) {
       temperature: 0.7,
     });
 
+    console.log("AI Analysis Response:", response.content[0]);
+
     return NextResponse.json({
-      analysis: response.content,
+      analysis: response?.content[0]?.text ,
       type,
     });
   } catch (error) {

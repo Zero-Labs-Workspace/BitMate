@@ -1,27 +1,6 @@
 import { BLOCKSCOUT_API } from "@/constants/contracts";
 import { NextResponse } from "next/server";
 
-interface Token {
-  address: string;
-  decimals: string;
-  name: string;
-  symbol: string;
-  type: string;
-  value: string;
-  icon_url: string | null;
-}
-
-interface ProcessedToken {
-  address: string;
-  symbol: string;
-  name: string;
-  balance: string;
-  decimals: number;
-  type: string;
-  icon: string | null;
-  valueUSD?: string;
-}
-
 export async function GET(
   req: Request,
   { params }: { params: { address: string } }
@@ -30,7 +9,8 @@ export async function GET(
     const address = params.address;
 
     const response = await fetch(
-      `${BLOCKSCOUT_API}/addresses/${address}/token-balances`,
+      `${BLOCKSCOUT_API}/addresses/${address}`,
+
       {
         headers: {
           accept: "application/json",
@@ -41,7 +21,6 @@ export async function GET(
     if (!response.ok) {
       throw new Error(`Blockscout API error: ${response.statusText}`);
     }
-    console.log("hohoho");
 
     const data = await response.json();
 
