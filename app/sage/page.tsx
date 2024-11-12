@@ -244,34 +244,37 @@ export default function Page() {
 
 	const handleBalance = async (data: any) => {
 		try {
-			const tokenAdd =
-				data.token1.toLowerCase() === "trbtc"
-					? "trbtc"
-					: await findToken(data.token1);
-
+			const tokenAdd = data.token1.toLowerCase() === "trbtc" 
+				? undefined  // Use undefined instead of "trbtc" for native token
+				: await findToken(data.token1);
+	
 			if (!tokenAdd && data.token1.toLowerCase() !== "trbtc") {
 				throw new Error("Token not found");
 			}
-
-			const acc = isAddress(data.address)
-				? data.address
-				: account?.address;
-
-			const balance =
-				tokenAdd === "trbtc"
-					? await getWalletBalance({
-							address: acc,
-							client,
-							chain: rootstackTestnetChain,
-					  })
-					: await getWalletBalance({
-							address: acc,
-							tokenAddress: tokenAdd,
-							client,
-							chain: rootstackTestnetChain,
-					  });
-
-			return balance;
+	
+			const acc = isAddress(data.address) ? data.address : account?.address;
+			
+			if (data.token1.toLowerCase() === "trbtc") {
+				// Handle native token balance
+				const balance = await getWalletBalance({
+					address: acc,
+					client,
+					chain: rootstackTestnetChain,
+				});
+				return balance;
+			} else {
+				// Handle token balance
+				if (!tokenAdd) {
+					throw new Error("Invalid token address");
+				}
+				const balance = await getWalletBalance({
+					address: acc,
+					tokenAddress: tokenAdd,
+					client,
+					chain: rootstackTestnetChain,
+				});
+				return balance;
+			}
 		} catch (error) {
 			console.error("Failed to fetch balance:", error);
 			throw error;
