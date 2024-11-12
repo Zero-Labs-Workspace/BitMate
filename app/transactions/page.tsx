@@ -1,221 +1,195 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Brain,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  TrendingUp,
-  History,
-  ArrowRight,
-} from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../_components/ui/card";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { AlertTriangle } from "lucide-react";
+import { Card } from "../_components/ui/card";
+import { useActiveAccount } from "thirdweb/react";
+
+// Define types
+interface TokenInfo {
+	symbol: string;
+}
+
+interface AddressInfo {
+	hash: string;
+}
+
+interface TokenTransfer {
+	total: {
+		value: string;
+	};
+	token?: TokenInfo;
+	from: AddressInfo;
+	to: AddressInfo;
+}
+
+interface Transaction {
+	hash: string;
+	status: "ok" | "error" | "pending";
+	timestamp: string;
+	method: string;
+	value: string;
+	gas_used: string;
+	token_transfers?: TokenTransfer[];
+}
+
+interface TransactionResponse {
+	items: Transaction[];
+}
+
+// Utility functions
+const formatHash = (hash: string): string => `${hash.slice(0, 10)}...`;
+
+const formatValue = (value: string): string | number => {
+	if (value === "0") return "0";
+	return (parseFloat(value) / 1e18).toFixed(6);
+};
+
+// StatusBadge component
+const StatusBadge = ({ status }: { status: Transaction["status"] }) => {
+	const statusStyles = {
+		ok: "bg-green-500/10 text-green-500",
+		error: "bg-red-500/10 text-red-500",
+		pending: "bg-gray-500/10 text-gray-500",
+	};
+
+	return (
+		<span
+			className={`text-xs px-2 py-0.5 rounded-full ${
+				statusStyles[status] || statusStyles.pending
+			}`}
+		>
+			{status}
+		</span>
+	);
+};
+
+// TokenTransferList component
+const TokenTransferList = ({ transfers }: { transfers: TokenTransfer[] }) => {
+	if (!transfers.length) return null;
+
+	return (
+		<div className="mt-4 pl-12">
+			<div className="p-4 bg-gray-100/5 rounded-lg">
+				<div className="text-sm font-medium mb-2">Token Transfers</div>
+				{transfers.map((transfer, index) => (
+					<div key={index} className="text-sm text-gray-500">
+						{transfer.total.value}{" "}
+						{transfer.token?.symbol || "Unknown Token"} from{" "}
+						{formatHash(transfer.from.hash)} to{" "}
+						{formatHash(transfer.to.hash)}
+					</div>
+				))}
+			</div>
+		</div>
+	);
+};
+
+// Main TransactionsList component
+const TransactionsList = () => {
+	const activeAccount = useActiveAccount();
+	const addressHash = activeAccount?.address; // Extract address here
+
+	const { data, isLoading, error } = useQuery<TransactionResponse>({
+		queryKey: ["all-transactions", addressHash],
+		queryFn: async () => {
+			const response = await fetch(
+				`https://rootstock-testnet.blockscout.com/api/v2/addresses/${addressHash}/transactions`
+			);
+			if (!response.ok) {
+				throw new Error(
+					`Failed to fetch transactions: ${response.statusText}`
+				);
+			}
+			return response.json();
+		},
+		staleTime: 30000,
+		enabled: !!addressHash,
+	});
+
+	if (isLoading) {
+		return (
+			<div className="h-full flex items-center justify-center">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-500" />
+			</div>
+		);
+	}
+
+	// If there’s an error, no data, or an empty list, show "No data found"
+	if (error || !data || data.items.length === 0) {
+		return (
+			<div className="h-full flex items-center justify-center text-gray-500">
+				<AlertTriangle className="w-5 h-5 mr-2 text-red-500" />
+				No data found
+			</div>
+		);
+	}
+
+	const transactions = data.items;
+
+	return (
+		<div className="w-[98%] py-4 mx-auto flex flex-col gap-y-4">
+			{transactions.map((tx: Transaction) => (
+				<Card
+					key={tx.hash}
+					className="overflow-hidden bg-transparent text-white"
+				>
+					<div className="p-4">
+						<div className="flex items-start justify-between w-full">
+							<div className="flex flex-col gap-y-2 w-full">
+								<div className="flex items-center gap-2">
+									<span className="font-mono text-sm">
+										{formatHash(tx.hash)}
+									</span>
+									<StatusBadge status={tx.status} />
+								</div>
+								<div className="text-sm text-gray-500 mt-1">
+									{new Date(tx.timestamp).toLocaleString()}
+								</div>
+							</div>
+							<div className="flex w-full justify-between">
+								<div className="text-sm">
+									<span className="text-gray-500">
+										Method:{" "}
+									</span>
+									{tx.method || "Contract Interaction"}
+								</div>
+								<div className="text-sm">
+									<span className="text-gray-500">
+										Value:{" "}
+									</span>
+									{formatValue(tx.value)} ETH
+								</div>
+								{tx.gas_used && (
+									<div className="text-sm">
+										<span className="text-gray-500">
+											Gas Used:{" "}
+										</span>
+										{tx.gas_used}
+									</div>
+								)}
+							</div>
+						</div>
+
+						{tx.token_transfers && (
+							<TokenTransferList transfers={tx.token_transfers} />
+						)}
+					</div>
+				</Card>
+			))}
+		</div>
+	);
+};
 
 const SmartTransactions = () => {
-  const [transactions] = useState([
-    {
-      hash: "0x2958d1a5...",
-      method: "0xcbf83a04",
-      status: "error",
-      timestamp: "2024-11-11T22:29:56.000000Z",
-      to: "0x45EDa601198dB28413Fa7653300c52D5e4Db9B8B",
-      value: "0",
-      // AI-generated analysis
-      aiAnalysis: {
-        type: "Oracle Interaction",
-        purpose: "Price Feed Update",
-        error: "Block number mismatch",
-        pattern: "Regular Oracle Updates",
-        risk: "Low",
-      },
-    },
-    {
-      hash: "0xe51bfac2...",
-      method: "0xcbf83a04",
-      status: "error",
-      timestamp: "2024-11-11T22:28:56.000000Z",
-      to: "0x39192498fCf1dbE11653040Bb49308e09A1056aC",
-      value: "0",
-      aiAnalysis: {
-        type: "BTC/USD Oracle",
-        purpose: "Price Update",
-        error: "Timing Error",
-        pattern: "High Frequency Updates",
-        risk: "Low",
-      },
-    },
-  ]);
-
-  return (
-    <div className="p-6 space-y-6">
-      {/* AI Overview Card */}
-      <Card className="border-2 border-[#FF9100]/20">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-full bg-gradient-to-r from-[#FF9100] to-[#e900ab]">
-              <Brain className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-lg font-bold mb-2">
-                Transaction Pattern Analysis
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-3 bg-blue-500/10 rounded-lg">
-                  <div className="text-sm font-medium">Primary Activity</div>
-                  <div className="text-lg">Oracle Updates</div>
-                </div>
-                <div className="p-3 bg-green-500/10 rounded-lg">
-                  <div className="text-sm font-medium">Success Rate</div>
-                  <div className="text-lg">76%</div>
-                </div>
-                <div className="p-3 bg-yellow-500/10 rounded-lg">
-                  <div className="text-sm font-medium">Avg Gas Used</div>
-                  <div className="text-lg">92,740 gas</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Transaction List */}
-      <div className="space-y-4">
-        {transactions.map((tx, i) => (
-          <Card key={i} className="overflow-hidden">
-            <div className="p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <div
-                    className={`p-2 rounded-full ${
-                      tx.status === "error"
-                        ? "bg-red-500/20"
-                        : "bg-green-500/20"
-                    }`}
-                  >
-                    {tx.status === "error" ? (
-                      <XCircle className="w-5 h-5 text-red-500" />
-                    ) : (
-                      <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm">{tx.hash}</span>
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded-full ${
-                          tx.status === "error"
-                            ? "bg-red-500/20 text-red-500"
-                            : "bg-green-500/20 text-green-500"
-                        }`}
-                      >
-                        {tx.status}
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      {new Date(tx.timestamp).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-                <button className="text-[#FF9100] hover:text-[#e900ab] transition-colors">
-                  View Details
-                </button>
-              </div>
-
-              {/* AI Analysis Section */}
-              <div className="mt-4 pl-12">
-                <div className="p-4 bg-gradient-to-r from-[#FF9100]/5 to-[#e900ab]/5 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Brain className="w-4 h-4 text-[#FF9100]" />
-                    <span className="font-medium">AI Analysis</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <div className="text-gray-500">Transaction Type</div>
-                      <div className="font-medium">{tx.aiAnalysis.type}</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-500">Purpose</div>
-                      <div className="font-medium">{tx.aiAnalysis.purpose}</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-500">Risk Level</div>
-                      <div className="font-medium">{tx.aiAnalysis.risk}</div>
-                    </div>
-                    {tx.status === "error" && (
-                      <div className="col-span-full">
-                        <div className="flex items-center gap-2 text-red-500">
-                          <AlertTriangle className="w-4 h-4" />
-                          <span>Error: {tx.aiAnalysis.error}</span>
-                        </div>
-                      </div>
-                    )}
-                    <div className="col-span-full">
-                      <div className="text-gray-500">Pattern</div>
-                      <div className="font-medium">{tx.aiAnalysis.pattern}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      {/* Smart Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
-            Transaction Insights
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="p-4 border border-blue-500/20 rounded-lg">
-              <h3 className="font-medium flex items-center gap-2">
-                <History className="w-4 h-4 text-blue-500" />
-                Activity Pattern
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Regular oracle price updates with 1-minute intervals. This
-                wallet appears to be an automated oracle feeder.
-              </p>
-            </div>
-            <div className="p-4 border border-yellow-500/20 rounded-lg">
-              <h3 className="font-medium flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                Common Issues
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Most errors are due to block number mismatches, suggesting
-                timing synchronization issues.
-              </p>
-            </div>
-            <div className="p-4 border border-green-500/20 rounded-lg">
-              <h3 className="font-medium flex items-center gap-2">
-                <ArrowRight className="w-4 h-4 text-green-500" />
-                Recommendations
-              </h3>
-              <ul className="text-sm text-gray-500 mt-1 space-y-2">
-                <li>
-                  • Consider implementing retry mechanism for failed updates
-                </li>
-                <li>
-                  • Monitor block confirmation times for better synchronization
-                </li>
-                <li>• Add error handling for block number mismatches</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+	return (
+		<div className="h-full max-h-full w-full relative">
+			<div className="flex items-center justify-between w-full px-6 border-b border-[#444444] py-3">
+				<h5 className="text-3xl">Transactions</h5>
+			</div>
+			<TransactionsList />
+		</div>
+	);
 };
 
 export default SmartTransactions;
