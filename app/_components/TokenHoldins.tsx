@@ -18,7 +18,7 @@ const fetchTokenHoldings = async (address:any) => {
   const response = await axios.get(
     `https://rootstock-testnet.blockscout.com/api/v2/addresses/${address}/tokens?type=ERC-20,ERC-721,ERC-1155`
   );
-  return response.data;
+  return response.data.slice(0,6);
 };
 
 const TokenHoldings = () => {
@@ -34,10 +34,6 @@ const TokenHoldings = () => {
     }
   );
 
-  if (isError) {
-    return <div>Error fetching token holdings</div>;
-  }
-
   return (
     <Card className="bg-zinc-900 border-zinc-800">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -48,7 +44,17 @@ const TokenHoldings = () => {
           <div className="flex justify-center py-6">
             <Loader2 className="animate-spin text-white" />
           </div>
-        ) : data && data.items && data.items.length > 0 ? (
+        ) : isError || !data || !data.items || data.items.length === 0 ? (
+          <div className="flex flex-col items-center justify-between gap-y-14 h-full">
+            <div className="text-center text-white">No tokens found</div>
+            <Image
+              src="/crashed-error.svg"
+              alt="No tokens"
+              width={250}
+              height={250}
+            />
+          </div>
+        ) : (
           <Table>
             <TableHeader>
               <TableRow className="border-zinc-800">
@@ -85,17 +91,6 @@ const TokenHoldings = () => {
               ))}
             </TableBody>
           </Table>
-        ) : (
-          <div className="flex flex-col items-center justify-between gap-y-14 h-full">
-            <div className="text-center text-white">No tokens found</div>
-            <Image
-              src="/crashed-error.svg"
-              alt="No tokens"
-              className=""
-              width={250}
-              height={250}
-            />
-          </div>
         )}
       </CardContent>
     </Card>
