@@ -365,7 +365,7 @@ export default function Page() {
                 </div>
                 <div
                   className={`mx-4 ${
-                    role === "bot" ? "bg-[#ff910079] p-2 rounded-lg w-40" : ""
+                    role === "bot" ? "bg-[#ff910079] p-2 rounded-lg min-w-40 max-w-[85%]" : ""
                   }`}
                 >
                   {content}
