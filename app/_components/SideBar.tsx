@@ -30,7 +30,7 @@ export default function SideBar() {
     },
     {
       name: "DeFi Sage",
-      href: "/advisor",
+      href: "/sage",
       icon: <Brain />,
       description: "AI-Powered Insights",
       isAI: true,
