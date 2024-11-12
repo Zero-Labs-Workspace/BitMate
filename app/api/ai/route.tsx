@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     console.log("Prompt:", prompt);
 
-    const response = await anthropic.messages.create({
+    const response: any = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 2024,
       messages: [{ role: "user", content: prompt }],
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     console.log("AI Analysis Response:", response.content[0]);
 
     return NextResponse.json({
-      analysis: response?.content[0]?.text ,
+      analysis: response?.content[0]?.text,
       type,
     });
   } catch (error) {
