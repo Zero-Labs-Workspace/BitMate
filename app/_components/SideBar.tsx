@@ -60,7 +60,7 @@ export default function SideBar() {
     },
     {
       name: "Rootstock Collective",
-      href: "https://rootstockcollective.com",
+      href: "https://rootstockcollective.xyz/",
       icon: <Users />,
       description: "Join Bitcoin DAO & Build",
       isExternal: true,
