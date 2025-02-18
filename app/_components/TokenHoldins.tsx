@@ -48,7 +48,7 @@ const TokenHoldings = () => {
           <div className="flex flex-col items-center justify-between gap-y-14 h-full">
             <div className="text-center text-white">No tokens found</div>
             <Image
-              src="/crashed-error.svg"
+              src="/holdings-nill.svg"
               alt="No tokens"
               width={250}
               height={250}
