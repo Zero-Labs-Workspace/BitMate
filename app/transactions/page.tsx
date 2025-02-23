@@ -132,7 +132,7 @@ const TransactionsList = () => {
 			{transactions.map((tx: Transaction) => (
 				<Card
 					key={tx.hash}
-					className="overflow-hidden bg-transparent text-white"
+					className="overflow-hidden bg-transparent text-white border-white/20"
 				>
 					<div className="p-4">
 						<div className="flex items-start justify-between w-full">
@@ -144,7 +144,7 @@ const TransactionsList = () => {
 									<StatusBadge status={tx.status} />
 								</div>
 								<div className="text-sm text-gray-500 mt-1">
-									{new Date(tx.timestamp).toLocaleString()}
+									{new Date(tx.timestamp).toLocaleString([], { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
 								</div>
 							</div>
 							<div className="flex w-full justify-between">

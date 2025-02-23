@@ -338,23 +338,24 @@ export default function Page() {
 					</div>
 				</div>
 				<div className="flex items-center gap-x-4">
-					<Input
+					{/* <Input
 						type="text"
 						placeholder="Wallet address"
 						value={address}
 						onChange={(e) => setAddress(e.target.value)}
 						className="w-64 bg-transparent text-white placeholder-gray-400 border-zinc-800 focus-visible:ring-0"
-					/>
+					/> */}
 					<div className="flex items-center gap-2">
 						<Switch
 							checked={isTransactionMode}
 							onCheckedChange={setIsTransactionMode}
-							className="data-[state=checked]:bg-primary"
+							// className="data-[state=checked]:bg-primary"
 						/>
 						<Label className="text-sm font-medium">
-							{isTransactionMode
-								? "Transaction Mode"
-								: "Strategy Mode"}
+							{/* {isTransactionMode
+									? "Transaction Mode"
+								: "Strategy Mode"} */}
+							Allow Spending
 						</Label>
 					</div>
 				</div>
@@ -419,7 +420,7 @@ export default function Page() {
 										placeholder={
 											isTransactionMode
 												? "Enter transaction details..."
-												: "Ask for DeFi strategy..."
+												: "I’m your Bitcoin Finances guide, ask me anything"
 										}
 										disabled={portfolioLoading}
 										className="w-full bg-transparent border-[#444444] focus-visible:ring-0 outline-none"
