@@ -127,26 +127,22 @@ export default function Component() {
 								),
 								netWorth: Number(item.value) || 0,
 						  }))
-						: [
-								{ month: "Jan", netWorth: 0 },
-								{ month: "Feb", netWorth: 0 },
-								{ month: "Mar", netWorth: 0 },
-								{ month: "Apr", netWorth: 0 },
-								{ month: "May", netWorth: 0 },
-								{ month: "Jun", netWorth: 0 },
-						  ];
+						: Array.from({ length: 6 }, (_, index) => ({
+								month: new Date(0, index).toLocaleString("default", { month: "short" }),
+								netWorth: 0,
+						  }));
 
 				setPortfolioData(formattedData);
 			} catch (error) {
 				console.error("Error fetching data:", error);
-				setPortfolioData([
-					{ month: "Jan", netWorth: 0 },
-					{ month: "Feb", netWorth: 0 },
-					{ month: "Mar", netWorth: 0 },
-					{ month: "Apr", netWorth: 0 },
-					{ month: "May", netWorth: 0 },
-					{ month: "Jun", netWorth: 0 },
-				]);
+				setPortfolioData(
+					Array.from({ length: 6 }, (_, index) => ({
+						month: new Date(0, index).toLocaleString("default", {
+							month: "short",
+						}),
+						netWorth: 0,
+					}))
+				);
 			} finally {
 				setLoading(false);
 			}
@@ -179,7 +175,7 @@ export default function Component() {
 							{loading ? (
 								<div className="flex items-center justify-center h-full">
 									<Loader2
-										className="animate-spin text-[#FF9100]"
+										className="animate-spin text-primary"
 										size={48}
 									/>
 								</div>

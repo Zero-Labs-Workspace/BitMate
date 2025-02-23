@@ -17,6 +17,18 @@ import { embeddedWallet } from "thirdweb/wallets";
 import { client } from "@/providers/thirdwebProvider";
 import { rootstackTestnetChain } from "@/constants/chains";
 import Image from "next/image";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "./ui/dialog";
+import { Toggle } from "./ui/toggle";
+import { Switch } from "./ui/switch";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 export default function SideBar() {
 	const pathname = usePathname();
@@ -50,24 +62,6 @@ export default function SideBar() {
 		},
 	];
 
-	// const toolsMenuItems = [
-	//   {
-	//     name: "Bridge",
-	//     href: "https://powpeg.testnet.rootstock.io/",
-	//     icon: <ArrowRightLeft />,
-	//     description: "BTC ⇄ RBTC Bridge",
-	//     isExternal: true,
-	//   },
-	//   {
-	//     name: "Rootstock Collective",
-	//     href: "https://rootstockcollective.xyz/",
-	//     icon: <Users />,
-	//     description: "Join Bitcoin DAO & Build",
-	//     isExternal: true,
-	//     isNew: true,
-	//   },
-	// ];
-
 	const MenuItem = ({
 		item,
 	}: {
@@ -83,17 +77,17 @@ export default function SideBar() {
 	}) => (
 		<Link
 			href={item.href}
-			className={`group relative flex items-center gap-x-2.5 hover:bg-gradient-to-r from-[#FF9100] via-[#FF9100] to-[#e900ab] rounded-lg px-3 py-2.5 ${
+			className={`group relative flex items-center gap-x-2.5 hover:bg-gradient-to-r from-primary via-primary to-[#e900ab] rounded-lg px-3 py-2.5 ${
 				pathname === item.href
-					? "bg-gradient-to-r from-[#FF9100] via-[#FF9100] to-[#e900ab]"
+					? "bg-gradient-to-r from-primary via-primary to-[#e900ab]"
 					: ""
-			} ${item.isAI ? "border border-[#FF9100]/20" : ""}`}
+			} ${item.isAI ? "border border-primary/20" : ""}`}
 		>
 			<div
 				className={`${
 					pathname === item.href
 						? "text-white"
-						: "text-[#FF9100] group-hover:text-white"
+						: "text-primary group-hover:text-white"
 				}`}
 			>
 				{item.icon}
@@ -111,8 +105,8 @@ export default function SideBar() {
 				{item.isAI && (
 					<div className="absolute -right-2 -top-2 transform rotate-12">
 						<div className="relative">
-							<span className="absolute -inset-0.5 bg-gradient-to-r from-[#FF9100] to-[#e900ab] rounded blur-sm opacity-30 animate-pulse"></span>
-							<span className="relative flex items-center gap-1 text-[10px] px-1.5 py-0.5 bg-[#18181B] text-[#FF9100] rounded-full border border-[#FF9100]/30">
+							<span className="absolute -inset-0.5 bg-gradient-to-r from-primary to-[#e900ab] rounded blur-sm opacity-30 animate-pulse"></span>
+							<span className="relative flex items-center gap-1 text-[10px] px-1.5 py-0.5 bg-[#18181B] text-primary rounded-full border border-primary/30">
 								<Flame size={10} />
 								Hot
 							</span>
@@ -144,31 +138,69 @@ export default function SideBar() {
 					))}
 				</div>
 
-				{/* Tools Section */}
-				{/* <div className="mt-8">
-          <div className="text-sm text-white/50 px-3 mb-2 flex items-center justify-between">
-            <span>Quick Access</span>
-            <span className="text-xs bg-[#27272A] px-2 py-0.5 rounded-full">
-              External
-            </span>
-          </div>
-          <div className="space-y-1">
-            {toolsMenuItems.map((item) => (
-              <MenuItem key={item.name} item={item} />
-            ))}
-          </div>
-        </div> */}
-
 				<div className="flex-1" />
 
 				{/* Settings Quick Access */}
-				<Link
-					href="/"
-					className="flex items-center gap-x-2.5 text-white/70 hover:text-white px-3 py-2.5 mb-4"
-				>
-					<Settings size={20} />
-					<span>Settings</span>
-				</Link>
+				<Dialog>
+					<DialogTrigger asChild>
+						<button className="flex items-center gap-x-2.5 text-white/70 hover:text-white px-3 py-2.5 mb-4">
+							<Settings size={20} />
+							<span>Settings</span>
+						</button>
+					</DialogTrigger>
+					<DialogContent className="bg-[#18181B] border-[#6C6C6C]">
+						<DialogTitle className="text-3xl font-bold">
+							Settings
+						</DialogTitle>
+						<div className="flex items-center justify-between">
+							<div>
+								<h6 className="text-lg font-normal">
+									Allow BitMate to manage assets
+								</h6>
+								<p className="text-sm text-white/50 font-thin">
+									Activate if you want the agent to make
+									actions for you.
+								</p>
+							</div>
+							<Switch />
+						</div>
+						<div className="flex items-center justify-between">
+							<div>
+								<h6 className="text-lg font-normal">
+									Add a max spending allowance{" "}
+								</h6>
+								<p className="text-sm text-white/50 font-thin">
+									This will be the maximum amount BitMate
+									would be able to manage for you.
+								</p>
+							</div>
+							<Switch />
+						</div>
+						<div className="flex items-center justify-between bg-[#18181B] p-2">
+							<div className="flex items-center justify-between w-full pr-2 bg-[#27272A] rounded-lg">
+								<Input
+									type="text"
+									className="bg-transparent border-none ring-none  focus:outline-none focus:ring-0 focus-visible:ring-none"
+									placeholder="0000"
+								/>
+								<span className="text-white ml-2 font-thin">
+									RBTC
+								</span>
+							</div>
+							<Button className="bg-primary hover:bg-primary/80 text-black/80 px-4 py-2 rounded ml-2">
+								Approve
+							</Button>
+						</div>
+						<div className="flex justify-end">
+							<DialogClose asChild>
+								<Button variant={"ghost"} className="text-white/60 hover:bg-white/10 hover:text-white">Back</Button>
+							</DialogClose>
+							<Button className="bg-primary hover:bg-primary/80 text-black/80 px-4 py-2 rounded ml-2">
+								Save Changes
+							</Button>
+						</div>
+					</DialogContent>
+				</Dialog>
 
 				{/* Connect Wallet Button */}
 				<div className="w-full bg-[#27272A] rounded-lg p-3 py-3.5 text-center flex justify-center">
