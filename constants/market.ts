@@ -22,6 +22,8 @@ export const projects = [
     url: "https://sovryn.com/",
     description:
       "Sovryn is a non-custodial and permission-less smart contract based system for bitcoin lending, borrowing and margin trading.",
+    chain: "RSK",
+    category: "Lending",
     twitter: "SovrynBTC",
     mcap: 30466777.864859335,
     tvl: "$72.66m",
@@ -79,6 +81,8 @@ export const projects = [
     url: "https://sushi.com/",
     description:
       "A fully decentralized protocol for automated liquidity provision on Ethereum.\r\n",
+    chain: "Ethereum",
+    category: "Dexes",
     twitter: "SushiSwap",
     mcap: 162224805.41520268,
     tvl: "$3.17m",

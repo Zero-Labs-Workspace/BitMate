@@ -28,7 +28,7 @@ export const ProjectCard = ({ project }: { project: any }) => (
 							<p className="text-sm text-white/70 line-clamp-2 mb-4">
 								{project?.description}
 							</p>
-							<div className="flex items-center gap-4">
+							{/* <div className="flex items-center gap-4">
 								<div>
 									<p className="text-sm text-white/50">TVL</p>
 									<p className="text-white font-semibold">
@@ -53,7 +53,7 @@ export const ProjectCard = ({ project }: { project: any }) => (
 										</p>
 									</div>
 								)}
-							</div>
+							</div> */}
 						</div>
 						{project.url && (
 							<Link
