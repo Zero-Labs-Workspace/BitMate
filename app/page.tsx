@@ -128,7 +128,10 @@ export default function Component() {
 								netWorth: Number(item.value) || 0,
 						  }))
 						: Array.from({ length: 6 }, (_, index) => ({
-								month: new Date(0, index).toLocaleString("default", { month: "short" }),
+								month: new Date(0, index).toLocaleString(
+									"default",
+									{ month: "short" }
+								),
 								netWorth: 0,
 						  }));
 
@@ -160,12 +163,21 @@ export default function Component() {
 			<div className="grid grid-cols-3 gap-4">
 				<Card className="bg-transparent border-zinc-800 col-span-2">
 					<CardHeader>
-						<CardTitle className="text-2xl font-bold text-white">
-							Total Net Worth (tRBTC)
-						</CardTitle>
-						<CardDescription className="text-slate-100">
-							Showing net worth for the last few months
-						</CardDescription>
+						<div className="flex items-center justify-between">
+							<div className="flex flex-col">
+								<h5 className="text-2xl font-bold text-white">
+									Total Net Worth (tRBTC)
+								</h5>
+								<p className="text-slate-100">
+									Showing net worth for the last few months
+								</p>
+							</div>
+							<div className="flex flex-col items-end">
+								<h5 className="text-2xl font-bold text-white">
+									{walletBalance}
+								</h5>
+							</div>
+						</div>
 					</CardHeader>
 					<CardContent className="my-4">
 						<ChartContainer

@@ -65,7 +65,7 @@ export const PROMPT_TEMPLATES = {
     - Protocol mechanics and technology
     - Risk factors and mitigation
     - Technical analysis and metrics
-    - native token is rbtc and decimal is 18 (calaucte the price and all accuractly)
+    - native token is rbtc (Rootstock Bitcoin) and decimal is 18 (calaucte the price and all accuractly)
     - Dont give very long answers
     Avoid direct price predictions or investment advice.
   `,
