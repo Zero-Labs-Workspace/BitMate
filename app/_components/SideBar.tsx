@@ -116,7 +116,7 @@ export default function SideBar() {
   );
 
   return (
-    <div className="w-full max-w-96 h-full">
+    <div className="w-full max-w-80 h-full">
       <div className="space-y-5 w-10/12 mx-auto h-full flex flex-col items-stretch">
         {/* Logo */}
         <div className="max-w-[11.5rem] pl-4 py-3">
@@ -220,7 +220,6 @@ export default function SideBar() {
                     "apple",
                     "wallet",
                     "passkey",
-                    "phone",
                     "google",
                     "guest",
                     "email",
