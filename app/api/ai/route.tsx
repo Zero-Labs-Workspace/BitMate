@@ -19,11 +19,6 @@ export async function POST(req: Request) {
 
     const limitedHistory = messageHistory.slice(-10);
 
-    console.log("Sending prompt to model with message history:", {
-      prompt,
-      historyLength: limitedHistory.length,
-    });
-
     const messages = [
       {
         role: "system",
@@ -105,8 +100,6 @@ export async function POST(req: Request) {
       tool_choice: "auto",
     });
 
-    console.log("AI Response:", response);
-
     const aiMessage = response.choices[0].message;
     const toolCalls = aiMessage.tool_calls;
 
@@ -138,7 +131,13 @@ export async function POST(req: Request) {
 }
 
 function getSystemPrompt() {
-  return `You are DeFi Sage AI, a personal DeFi assistant for the Rootstock ecosystem.
+  return `You are DeFi Sage AI, a personal DeFi assistant for the Rootstock testnet ecosystem.
+  
+  IMPORTANT TESTNET DETAILS:
+  - We are operating on Rootstock TESTNET, not mainnet
+  - The native token is TRBTC (Testnet RBTC), not RBTC
+  - Always use TRBTC when referring to the native token
+  - All balances and transactions are using testnet tokens with no real value
   
   RESPONSE GUIDELINES:
   - Be extremely concise - no more than 2 short paragraphs total
@@ -153,7 +152,7 @@ function getSystemPrompt() {
   - One short greeting line, then 1-2 concise sentences for the answer
   
   CONTENT:
-  - Rootstock ecosystem: RBTC (native), rDAOs, RSK Swap, Sovryn, Money on Chain
+  - Rootstock testnet ecosystem: TRBTC (native), tRIF, tDOC, etc.
   - For transfers/balances: respond naturally without mentioning functions
   - For strategies: give only brief, specific insights
   
@@ -161,13 +160,23 @@ function getSystemPrompt() {
 }
 
 function createChatPrompt(userContext: any, question: string, address: string) {
-  return `I need your help with the following DeFi request for my Rootstock wallet (${address}):
+  return `I need your help with the following DeFi request for my Rootstock testnet wallet (${address}):
   
   USER QUESTION: "${question}"
   
-  My portfolio data: ${JSON.stringify(userContext, null, 2)}
+  My portfolio data: ${JSON.stringify(
+    userContext,
+    null,
+    2
+  )} the amount is in wei so you need to convert it to the correct token amount by dividing by 10e18.
   
-  Please provide a helpful, personalized response that directly addresses my question. If I'm asking about sending tokens or checking balances, please handle that appropriately. If my portfolio is empty, don't just tell me I have no tokens - suggest what I could explore in the Rootstock ecosystem.
+  IMPORTANT: We are on the TESTNET environment. The native token is TRBTC (not RBTC). All tokens are testnet versions (TRBTC, tRIF, tDOC) with no real value.
+  
+  Please provide a helpful, personalized response that directly addresses my question. If I'm asking about sending tokens or checking balances, please handle that appropriately. If my portfolio is empty, don't just tell me I have no tokens - suggest what I could explore in the Rootstock testnet ecosystem.
+
+  When I ask to send RBTC, you should interpret this as TRBTC (testnet RBTC). Always use TRBTC in your function calls and responses.
+
+  If needed, you can USE FUNCTIONS like **transfer** or **balance** to help me with my request. WHENEVER ASKED TO SEND TOKENS, PLEASE USE THE **transfer** FUNCTION. WHENEVER ASKED TO CHECK BALANCES, PLEASE USE THE **balance** FUNCTION.
   
   Be conversational and friendly - like a professional financial advisor would be, not like a generic chatbot. Avoid technical language about functions or API calls - speak to me naturally about my options.`;
 }

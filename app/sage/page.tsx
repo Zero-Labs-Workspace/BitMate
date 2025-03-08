@@ -95,7 +95,12 @@ export default function Page() {
     }
   }, [address]);
 
-  const handleTransfer = async (data: any) => {
+  const handleTransfer = async (data: {
+    token1: string;
+    address: string;
+    amount: number;
+  }) => {
+    console.log("Data:", data);
     try {
       const tokenAddress =
         data.token1.toLowerCase() === "trbtc"
@@ -110,7 +115,7 @@ export default function Page() {
           to: data.address,
           chain: rootstackTestnetChain,
           client: client,
-          value: toWei(data.amount),
+          value: toWei(data.amount.toString()),
         });
       } else {
         const contract = getContract({
@@ -221,7 +226,7 @@ export default function Page() {
 
         switch (functionData.name) {
           case "transfer":
-            if (!isValidWalletAddress(functionData.arguments.address)) {
+            if (!isValidWalletAddress(functionData?.arguments?.address)) {
               throw new Error("Invalid wallet address");
             }
             const result = await handleTransfer(functionData.arguments);
@@ -230,26 +235,19 @@ export default function Page() {
               {
                 role: "bot",
                 content: (
-                  <div className="w-full">
-                    <ReactMarkdown>
-                      {data.analysis || "Transaction initiated."}
-                    </ReactMarkdown>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span>Transaction sent: </span>
-                      <a
-                        href={`${BLOCK_EXPLORER_URL}${result.transactionHash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:text-blue-600 flex items-center gap-1"
-                      >
-                        {`${result.transactionHash.slice(
-                          0,
-                          6
-                        )}...${result.transactionHash.slice(-4)}`}
-                        <ExternalLink size={16} />
-                      </a>
-                    </div>
-                  </div>
+                  <a
+                    href={`${BLOCK_EXPLORER_URL}${result.transactionHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-600 flex items-center gap-1"
+                  >
+                    Transaction:{" "}
+                    {`${result.transactionHash.slice(
+                      0,
+                      6
+                    )}...${result.transactionHash.slice(-4)}`}
+                    <ExternalLink size={16} />
+                  </a>
                 ),
               },
             ]);
@@ -263,9 +261,6 @@ export default function Page() {
                 role: "bot",
                 content: (
                   <div className="w-full">
-                    <ReactMarkdown>
-                      {data.analysis || "Balance retrieved."}
-                    </ReactMarkdown>
                     <div className="mt-2">
                       Balance: {balance.displayValue} {balance.symbol}
                     </div>
@@ -298,9 +293,11 @@ export default function Page() {
           {
             role: "bot",
             content: (
-              <ReactMarkdown>
-                {data.analysis || "No information available for this query."}
-              </ReactMarkdown>
+              <div className="markdown-content space-y-4">
+                <ReactMarkdown>
+                  {data.analysis || "No information available for this query."}
+                </ReactMarkdown>
+              </div>
             ),
           },
         ]);

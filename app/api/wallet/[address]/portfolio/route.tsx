@@ -1,6 +1,8 @@
 import { BLOCKSCOUT_API } from "@/constants/contracts";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: Request,
   { params }: { params: { address: string } }
